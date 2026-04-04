@@ -28,6 +28,20 @@ jobs:
         with:
           python-version: "3.12"
 
+       
+
       - name: Run tests
         # This is the key verification step in the CI workflow.
         run: python -m unittest discover -s tests -v
+
+      
+      - name: list repos
+        # This is the key verification step in the CI workflow.
+        run: ls
+      - name: python versio
+        # This is the key verification step in the CI workflow.
+        run: python --version
+      - name: get date
+        # This is the key verification step in the CI workflow.
+        run: date
+        
