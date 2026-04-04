@@ -3,13 +3,8 @@
 name: 02 CI Workflow
 
 on:
-  # Run automatically when app code, tests, or this workflow file changes.
-  push:
-    paths:
-      - "app/**"
-      - "tests/**"
-      - ".github/workflows/02-ci.yml"
-  # Allow a safe manual run before students trigger it with a code change.
+  schedule:
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 jobs:
