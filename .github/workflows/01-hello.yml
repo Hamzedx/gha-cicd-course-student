@@ -2,7 +2,7 @@ name: 01 Hello Workflow
 
 on:
   pull_request:
-    type: [closed]
+    types: [closed]
     branches:
       - main
   workflow_dispatch:
