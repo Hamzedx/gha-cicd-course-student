@@ -1,4 +1,4 @@
-ARG APP_VERSION=latest
+
 
 
 
