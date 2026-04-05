@@ -1,8 +1,8 @@
-ARG APP_VERSION=latest
 
-ENV APP_VERSION=$APP_VERSION
 
-FROM python:$APP_VERSION
+
+
+FROM python:3.12-slim
 
 WORKDIR /app
 
