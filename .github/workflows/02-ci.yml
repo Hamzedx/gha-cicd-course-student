@@ -3,19 +3,17 @@
 name: 02 CI Workflow
 
 on:
-  # Run automatically when app code, tests, or this workflow file changes.
-  push:
-    paths:
-      - "app/**"
-      - "tests/**"
-      - ".github/workflows/02-ci.yml"
-  # Allow a safe manual run before students trigger it with a code change.
+
   workflow_dispatch:
 
 jobs:
   run-tests:
     # The runner is the temporary machine that executes the steps below.
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["v1", "vv"]
+
 
     steps:
       - name: Check out repository
@@ -23,11 +21,28 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Set up Python
-        # Prepare Python on the runner. This does not change the student laptop.
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: ${{ secrets[matrix.python-version] }}
+
+      - name: Check version
+        run: python --version
+
+       
 
       - name: Run tests
         # This is the key verification step in the CI workflow.
         run: python -m unittest discover -s tests -v
+
+      
+      - name: list repos
+        # This is the key verification step in the CI workflow.
+        run: ls
+      - name: python versio
+        # This is the key verification step in the CI workflow.
+        run: python --version
+      - name: get date
+        # This is the key verification step in the CI workflow.
+        run: date
+        
+        

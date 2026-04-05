@@ -6,7 +6,7 @@ def route_request(path):
     if path == "/health":
         return 200, {"status": "ok"}
 
-    return 404, {"error": "not found"}
+    return 404, {"error": "not found 1"}
 
 
 class AppHandler(BaseHTTPRequestHandler):

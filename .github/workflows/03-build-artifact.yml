@@ -39,20 +39,22 @@ jobs:
           IMAGE_TAG="run-${GITHUB_RUN_NUMBER}"
           echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Build Docker image with docker build
-        # Create the packaged application image with one traceable tag.
-        # The deploy workflow will run this exact same tag later.
-        run: |
-          docker build \
-            -t "${IMAGE_NAME}:${{ steps.image-tag.outputs.image_tag }}" \
-            .
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+         
+         tags: ${{ env.IMAGE_NAME }}:${{ steps.image-tag.outputs.image_tag }}
+         push: false
+         load: true
+
+      - name: List images
+        run: docker images
 
       - name: Save Docker image as artifact file
-        # Convert that exact tagged image into a file that can be reused later.
         run: docker save "${IMAGE_NAME}:${{ steps.image-tag.outputs.image_tag }}" -o "${IMAGE_TAR}"
 
       - name: Upload build artifact
-        # Store the packaged output so a later workflow can use the exact same package.
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
