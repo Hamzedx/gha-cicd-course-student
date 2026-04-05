@@ -1,0 +1,106 @@
+# This is the first real CI workflow in the course.
+# It verifies a change by running tests on a fresh runner.
+name: 02 CI Workflow
+
+on:
+
+  workflow_dispatch:
+env:
+  # Keep common image values in one place so the build steps stay readable.
+  IMAGE_NAME: tiny-health-app
+  IMAGE_TAR: tiny-health-app.tar
+  ARTIFACT_NAME: tiny-health-app-image
+
+jobs:
+  run-tests:
+    # The runner is the temporary machine that executes the steps below.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["v1", "vv"]
+
+
+    steps:
+      - name: Check out repository
+        # Download the repository contents onto the runner.
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ secrets[matrix.python-version] }}
+
+      - name: Check version
+        run: python --version
+
+       
+
+      - name: Run tests
+        # This is the key verification step in the CI workflow.
+        run: python -m unittest discover -s tests -v
+
+      
+      - name: list repos
+        # This is the key verification step in the CI workflow.
+        run: ls
+      - name: python versio
+        # This is the key verification step in the CI workflow.
+        run: python --version
+      - name: get date
+        # This is the key verification step in the CI workflow.
+        run: date
+        
+
+
+  
+
+       
+
+  build-package:
+      # Use a fresh GitHub-hosted runner for the build.
+      runs-on: ubuntu-latest
+      needs: run-tests
+
+      steps:
+        - name: Check out repository
+          # Get the repository files onto the runner.
+          uses: actions/checkout@v6
+
+        - name: Set up Python
+          # Prepare Python so the workflow can run the tests first.
+          uses: actions/setup-python@v6
+          with:
+            python-version: "3.12"
+
+        - name: Run tests
+          # Build only after the verification step passes.
+          run: python -m unittest discover -s tests -v
+      
+        - name: Set image tag
+          # Create one simple tag so the image is easy to identify in this run.
+          id: image-tag
+          run: |
+            IMAGE_TAG="run-${GITHUB_RUN_NUMBER}"
+            echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+
+        - name: Build Docker image
+          uses: docker/build-push-action@v7
+          with:
+          
+            tags: ${{ env.IMAGE_NAME }}:${{ steps.image-tag.outputs.image_tag }}
+            push: false
+            load: true
+
+        - name: List images
+          run: docker images
+
+        - name: Save Docker image as artifact file
+          run: docker save "${IMAGE_NAME}:${{ steps.image-tag.outputs.image_tag }}" -o "${IMAGE_TAR}"
+
+        - name: Upload build artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: ${{ env.ARTIFACT_NAME }}
+            path: ${{ env.IMAGE_TAR }}
+            retention-days: 7
