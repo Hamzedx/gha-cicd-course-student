@@ -1,7 +1,5 @@
 ARG APP_VERSION=latest
 
-
-
 FROM python:$APP_VERSION
 
 WORKDIR /app
