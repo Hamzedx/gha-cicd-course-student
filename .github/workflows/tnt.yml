@@ -46,7 +46,8 @@ jobs:
           docker build \
           -f newdockerfile \
           --build-arg APP_VERSION=run-${{ github.run_number }} \
-          -t "tiny-health-app:run-${{ github.run_number }}" . \
+          -t "tiny-health-app:run-${{ github.run_number }}"  \
+          .
           
 
       - name: Smoke test deployed app
