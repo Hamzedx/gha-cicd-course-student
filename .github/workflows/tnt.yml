@@ -44,6 +44,7 @@ jobs:
         # Start the exact same tagged image that the build workflow created.
         run: |
           docker build \
+          -f newdockerfile \
           --build-arg APP_VERSION=run-${{ github.run_number }} \
           -t "tiny-health-app:run-${{ github.run_number }}" \
 
